@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * deobfuscate.js — obfuscator.io の 7 変換複合を、決定論ツール 6 本で順に剥がす。
+ * deobfuscate.js — obfuscator.io の 7 変換複合を、決定論スクリプト 6 本で順に剥がす。
  *
  *   input.js
  *     → destring → dedead → decff → deselfdefend → dedebug → decompact
@@ -16,13 +16,13 @@
  *   node deobfuscate.js input.js --work-dir work/      # 各段の中間コードと pipeline.json を残す
  *   node deobfuscate.js --batch <indir> -o <outdir> [--prompt <promptdir>]
  *
- * 失敗時の扱い（実験で使った run_hybrid.py と同じ）:
- *   - ツールが非ゼロ終了したら、その段は飛ばして前段のコードを次に渡す（carry）。
+ * 失敗時の扱い:
+ *   - スクリプトが非ゼロ終了したら、その段は飛ばして前段のコードを次に渡す。
  *   - self-defending を剥がせなかったときは code-compact を掛けない。
  *     self-defending は自分の関数の toString() が 1 行かどうかで整形を検出し、
  *     改行が入るとハングする罠を持つ。残ったまま整形すると、動かないコードになる。
  *
- * 終了コード: 0 = 6 本すべて成功 / 3 = 一部のツールが失敗（出力は書いている）/
+ * 終了コード: 0 = 6 本すべて成功 / 3 = 一部のスクリプトが失敗（出力は書いている）/
  *             1 = 入出力のエラー / 2 = 引数の誤り
  */
 'use strict';
@@ -35,13 +35,13 @@ const { spawnSync } = require('child_process');
 const ROOT = __dirname;
 
 // 適用順。順序には理由がある（README「なぜこの順序か」）。
-const TOOLS = [
-  { name: 'string-obfuscation', script: 'tools/destring/strip-string-obfuscation.js' },
-  { name: 'deadcode-injection', script: 'tools/dedead/strip-deadcode-injection.js' },
-  { name: 'control-flow-flattening', script: 'tools/decff/strip-control-flow-flattening.js' },
-  { name: 'self-defending', script: 'tools/deselfdefend/strip-self-defending.js' },
-  { name: 'debug-protection', script: 'tools/dedebug/strip-debug-protection.js' },
-  { name: 'code-compact', script: 'tools/decompact/strip-code-compact.js' },
+const SCRIPTS = [
+  { name: 'string-obfuscation', script: 'scripts/destring/strip-string-obfuscation.js' },
+  { name: 'deadcode-injection', script: 'scripts/dedead/strip-deadcode-injection.js' },
+  { name: 'control-flow-flattening', script: 'scripts/decff/strip-control-flow-flattening.js' },
+  { name: 'self-defending', script: 'scripts/deselfdefend/strip-self-defending.js' },
+  { name: 'debug-protection', script: 'scripts/dedebug/strip-debug-protection.js' },
+  { name: 'code-compact', script: 'scripts/decompact/strip-code-compact.js' },
 ];
 
 const DEFAULT_TEMPLATE = path.join(ROOT, 'prompts', 'zeroshot.txt');
@@ -55,19 +55,18 @@ const USAGE = `使い方:
   --prompt <path>      LLM に渡すプロンプト（テンプレートにコードを埋め込んだもの）を書き出す。
                        --batch ではディレクトリを指定し <name>.prompt.txt を書く
   --template <file>    プロンプトのテンプレート（既定: prompts/zeroshot.txt）
-  --example <file>     テンプレートの {example} に入れる文（prompts/oneshot.txt を使うときに必要）
   --work-dir <dir>     各段の中間コードと pipeline.json を残す（既定は一時ディレクトリに作って消す）
   --batch <indir>      ディレクトリ内の --ext に合うファイルを一括処理する
   --ext <ext>          --batch の入力拡張子（既定: .js）
   --suffix <suffix>    --batch の出力拡張子（既定: .tools.js）
-  --timeout <sec>      ツール 1 本あたりの上限秒数（既定: 300）
+  --timeout <sec>      スクリプト 1 本あたりの上限秒数（既定: 300）
   -q, --quiet          進捗を表示しない
   -h, --help           このヘルプ
 `;
 
 function parseArgs(argv) {
   const opts = {
-    input: null, out: null, prompt: null, template: DEFAULT_TEMPLATE, example: null, workDir: null,
+    input: null, out: null, prompt: null, template: DEFAULT_TEMPLATE, workDir: null,
     batch: null, ext: '.js', suffix: '.tools.js', timeout: 300, quiet: false,
   };
   const need = (i, flag) => {
@@ -85,8 +84,6 @@ function parseArgs(argv) {
       opts.prompt = need(i, a); i++;
     } else if (a === '--template') {
       opts.template = need(i, a); i++;
-    } else if (a === '--example') {
-      opts.example = need(i, a); i++;
     } else if (a === '--work-dir') {
       opts.workDir = need(i, a); i++;
     } else if (a === '--batch') {
@@ -111,8 +108,8 @@ function parseArgs(argv) {
   return opts;
 }
 
-/** ツールを 1 本走らせる。例外は投げず、結果を返す。 */
-function runTool(script, src, dst, timeoutSec) {
+/** スクリプトを 1 本走らせる。例外は投げず、結果を返す。 */
+function runScript(script, src, dst, timeoutSec) {
   const started = Date.now();
   const proc = spawnSync(process.execPath, [script, src, '-o', dst, '--stats'], {
     encoding: 'utf8',
@@ -146,7 +143,7 @@ function parseStatsLine(stderr) {
 }
 
 /**
- * 1 ファイルについて 6 ツールを順に掛ける。
+ * 1 ファイルについて 6 本のスクリプトを順に掛ける。
  * 返り値: { code, record }。record は pipeline.json の中身。
  */
 function runPipeline(obfuscated, workDir, opts, log) {
@@ -156,72 +153,57 @@ function runPipeline(obfuscated, workDir, opts, log) {
 
   let code = obfuscated;
   let selfDefendFailed = false;
-  const record = { input_chars: obfuscated.length, tools: [] };
+  const record = { input_chars: obfuscated.length, steps: [] };
 
-  TOOLS.forEach((tool, idx) => {
+  SCRIPTS.forEach((step, idx) => {
     const i = idx + 1;
-    const entry = { index: i, transformation: tool.name, script: tool.script, input_chars: code.length };
+    const entry = { index: i, transformation: step.name, script: step.script, input_chars: code.length };
 
-    if (tool.name === 'code-compact' && selfDefendFailed) {
+    if (step.name === 'code-compact' && selfDefendFailed) {
       entry.status = 'skipped';
       entry.reason = 'self-defending が剥がれていないため整形しない';
-      record.tools.push(entry);
-      log(`  [${i}/6] ${tool.name.padEnd(24)} skip（self-defending が残っているので整形しない）`);
+      record.steps.push(entry);
+      log(`  [${i}/6] ${step.name.padEnd(24)} skip（self-defending が残っているので整形しない）`);
       return;
     }
 
-    const dst = path.join(workDir, `${String(i).padStart(2, '0')}.${tool.name}.js`);
-    const r = runTool(path.join(ROOT, tool.script), current, dst, opts.timeout);
+    const dst = path.join(workDir, `${String(i).padStart(2, '0')}.${step.name}.js`);
+    const r = runScript(path.join(ROOT, step.script), current, dst, opts.timeout);
     Object.assign(entry, r);
 
     if (r.status === 'ok') {
       const next = fs.readFileSync(dst, 'utf8');
       entry.output_chars = next.length;
       entry.code_changed = next !== code;
-      log(`  [${i}/6] ${tool.name.padEnd(24)} ${String(code.length).padStart(7)} → ${String(next.length).padStart(7)} 文字`);
+      log(`  [${i}/6] ${step.name.padEnd(24)} ${String(code.length).padStart(7)} → ${String(next.length).padStart(7)} 文字`);
       code = next;
       current = dst;
     } else {
-      if (tool.name === 'self-defending') selfDefendFailed = true;
+      if (step.name === 'self-defending') selfDefendFailed = true;
       entry.output_chars = code.length;
       entry.carried_forward = true;
-      log(`  [${i}/6] ${tool.name.padEnd(24)} 失敗（前段のコードを引き継ぐ）: ${(r.error || '').split('\n')[0]}`);
+      log(`  [${i}/6] ${step.name.padEnd(24)} 失敗（前段のコードを引き継ぐ）: ${(r.error || '').split('\n')[0]}`);
     }
-    record.tools.push(entry);
+    record.steps.push(entry);
   });
 
-  const failed = record.tools.filter((t) => t.status === 'failed').map((t) => t.transformation);
+  const failed = record.steps.filter((t) => t.status === 'failed').map((t) => t.transformation);
   Object.assign(record, {
     final_chars: code.length,
     reduction_pct: obfuscated.length ? Math.round(10000 * (1 - code.length / obfuscated.length)) / 100 : 0,
-    failed_tools: failed,
+    failed_steps: failed,
     status: failed.length ? 'partial' : 'ok',
   });
   fs.writeFileSync(path.join(workDir, 'pipeline.json'), JSON.stringify(record, null, 2) + '\n');
   return { code, record };
 }
 
-/**
- * テンプレートの {example} と {obfuscated_code} を埋める。
- * String#replace の `$` 置換を避けて split/join を使う。埋め込むコードの中に
- * "{example}" という文字列があっても誤爆しないよう、{example} を先に埋める。
- */
-function renderPrompt(template, code, example = '') {
-  return template.split('{example}').join(example).split('{obfuscated_code}').join(code);
+/** テンプレートの {obfuscated_code} を埋める。String#replace の `$` 置換を避けて split/join を使う。 */
+function renderPrompt(template, code) {
+  return template.split('{obfuscated_code}').join(code);
 }
 
-/** プロンプトを書き出すなら、テンプレートと {example} の文を先に読んで確かめる。 */
-function loadPromptParts(opts) {
-  if (!opts.prompt) return null;
-  const template = fs.readFileSync(opts.template, 'utf8');
-  if (template.includes('{example}') && !opts.example) {
-    throw new Error(`${opts.template} には {example} がある。--example <file> で例文を渡すこと` +
-                    '（作り方は prompts/README.md）');
-  }
-  return { template, example: opts.example ? fs.readFileSync(opts.example, 'utf8') : '' };
-}
-
-function processOne(inFile, outFile, promptFile, workDir, opts, parts, log) {
+function processOne(inFile, outFile, promptFile, workDir, opts, log) {
   const obfuscated = fs.readFileSync(inFile, 'utf8');
   const tmp = workDir ? null : fs.mkdtempSync(path.join(os.tmpdir(), 'deobf-'));
   try {
@@ -233,8 +215,9 @@ function processOne(inFile, outFile, promptFile, workDir, opts, parts, log) {
       process.stdout.write(code);
     }
     if (promptFile) {
+      const template = fs.readFileSync(opts.template, 'utf8');
       fs.mkdirSync(path.dirname(path.resolve(promptFile)), { recursive: true });
-      fs.writeFileSync(promptFile, renderPrompt(parts.template, code, parts.example));
+      fs.writeFileSync(promptFile, renderPrompt(template, code));
     }
     return record;
   } finally {
@@ -251,13 +234,6 @@ function main() {
     process.exit(2);
   }
   const log = opts.quiet ? () => {} : (s) => process.stderr.write(s + '\n');
-  let parts;
-  try {
-    parts = loadPromptParts(opts);
-  } catch (err) {
-    process.stderr.write(`${err.message}\n`);
-    process.exit(2);
-  }
 
   // --- バッチ ---
   if (opts.batch) {
@@ -276,12 +252,11 @@ function main() {
         opts.prompt ? path.join(opts.prompt, base + '.prompt.txt') : null,
         opts.workDir ? path.join(opts.workDir, base) : null,
         opts,
-        parts,
         log,
       );
       if (rec.status !== 'ok') partial += 1;
     });
-    log(`\n処理 ${files.length} 件: 全ツール成功 ${files.length - partial} / 一部失敗 ${partial}`);
+    log(`\n処理 ${files.length} 件: 全スクリプト成功 ${files.length - partial} / 一部失敗 ${partial}`);
     process.exit(partial ? 3 : 0);
   }
 
@@ -292,16 +267,16 @@ function main() {
   }
   let rec;
   try {
-    rec = processOne(opts.input, opts.out, opts.prompt, opts.workDir, opts, parts, log);
+    rec = processOne(opts.input, opts.out, opts.prompt, opts.workDir, opts, log);
   } catch (err) {
     process.stderr.write(`失敗: ${opts.input}\n  ${err.message}\n`);
     process.exit(1);
   }
   log(`${rec.input_chars} → ${rec.final_chars} 文字（-${rec.reduction_pct}%）` +
-      (rec.status === 'ok' ? '' : `  一部失敗: ${rec.failed_tools.join(', ')}`));
+      (rec.status === 'ok' ? '' : `  一部失敗: ${rec.failed_steps.join(', ')}`));
   process.exit(rec.status === 'ok' ? 0 : 3);
 }
 
 if (require.main === module) main();
 
-module.exports = { TOOLS, runPipeline, renderPrompt };
+module.exports = { SCRIPTS, runPipeline, renderPrompt };

@@ -1,8 +1,5 @@
 node_modules/
-tools/*/testdata/obf/
-tools/*/testdata/.verify-tmp/
+scripts/*/testdata/obf/
+scripts/*/testdata/.verify-tmp/
 .DS_Store
 *.log
-# 再現手順で作るもの
-JsDeObsBench/
-work/
