@@ -18,7 +18,7 @@
  *                'MjWLl':OTHER['LcEku']};                   // 別辞書への委譲
  *       S['MHoSl'](x, y)   ->   x + y
  *
- *   (b) switch ディスパッチャ（C77-0 では 140/1301 = 10.8%）
+ *   (b) switch ディスパッチャ（7 変換を同時に掛けたベンチマークのデータでは約 1 割）
  *       var ORD = S['wJRmM']['split']('|');   // 順序文字列は storage の中にいる
  *       var IDX = 0;
  *       while (!![]) { switch (ORD[IDX++]) { case '0': A; continue; ... } break; }

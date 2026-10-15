@@ -35,9 +35,8 @@ node strip-code-compact.js input.obf.js --stats -o /dev/null
 ## 何を剥がすか
 
 **`code-compact` は変換ではなくコード生成オプション `compact: true` ただ 1 つ**で、
-空白・改行・インデントを落とすだけ。上流の
-`JsDeObsBench/obfuscators/javascript-obfuscator-configs/code-compact.json` と
-`1-1.json` はバイト一致で、既定との差分は `"compact": true` のみ。
+空白・改行・インデントを落とすだけ。JsDeObsBench の code-compact 単体の設定も、
+既定との差分は `"compact": true` のみ。
 
 したがって **解除 = 整形のみ**。AST は 1 ノードも変わらない。
 
@@ -254,4 +253,4 @@ diff <(node testdata/src/01-es5-basic.js  < testdata/src/01-es5-basic.in) \
 `-o` を省いて stdout に出す場合だけ末尾に改行を 1 つ補う。
 ファイルに書くときは補わないので、gold とのバイト比較は `-o` を使うこと。
 
-開発が終わってから、JsDeObsBench の `combinations/C77-0` に**チューニングなしで**掛けた（ホールドアウト）。
+開発が終わってから、JsDeObsBench の 7 変換を同時に掛けたデータに**チューニングなしで**掛けた。

@@ -9,8 +9,8 @@ This repository deobfuscates JavaScript produced by
 [javascript-obfuscator](https://github.com/javascript-obfuscator/javascript-obfuscator) (obfuscator.io)
 with seven transformations applied at once: string array, dead-code injection,
 control-flow flattening, self-defending, debug protection, compact output and hexadecimal identifier renaming.
-This is the same setting as `combinations/C77-0` in the [JsDeObsBench](https://github.com/Ch3nYe/JsDeObsBench)
-benchmark (CCS'25).
+The settings are the same as those the [JsDeObsBench](https://github.com/Ch3nYe/JsDeObsBench) benchmark (CCS'25)
+uses when it applies all seven transformations together.
 
 - Six deterministic Node.js scripts (`scripts/`) strip six layers, one layer each, with Babel/acorn AST transforms.
   No LLM is involved at run time, and the output preserves behaviour.
@@ -53,8 +53,8 @@ node deobfuscate.js input.obf.js -o input.tools.js --prompt input.prompt.txt
 
 6 本のスクリプトは LLM（Claude Code）を使って 1 層に 1 本ずつ作成した。実行時には LLM を使わない。
 
-対象の 7 変換と設定は JsDeObsBench の `combinations/C77-0` と同じ
-（[`examples/c77-0.json`](examples/c77-0.json) に同じ効果の設定を置いた）。
+対象の 7 変換と設定は、JsDeObsBench（CCS'25 のベンチマーク）が 7 変換を同時に掛けるときの設定と同じ
+（[`examples/obfuscator-config.json`](examples/obfuscator-config.json) に同じ効果の設定を置いた）。
 
 ## 必要なもの
 
@@ -115,7 +115,7 @@ node deobfuscate.js input.obf.js -o input.tools.js --prompt input.prompt.txt
 | ファイル | 中身 | 文字数 |
 |---|---|---:|
 | [`sample.js`](examples/sample.js) | 原本 | 883 |
-| [`sample.obf.js`](examples/sample.obf.js) | [`c77-0.json`](examples/c77-0.json) で難読化（seed=1） | 9,636 |
+| [`sample.obf.js`](examples/sample.obf.js) | [`obfuscator-config.json`](examples/obfuscator-config.json) で難読化（seed=1） | 9,636 |
 | [`sample.tools.js`](examples/sample.tools.js) | 6 本のスクリプトの出力（識別子名以外は解除済み） | 1,379 |
 | [`sample.prompt.txt`](examples/sample.prompt.txt) | チャットに貼るプロンプト | — |
 | [`sample.llm.js`](examples/sample.llm.js) | 上の条件で LLM が返したコード | — |
@@ -143,7 +143,7 @@ function average(scores) {
 }
 ```
 
-難読化をやり直すときは `npx javascript-obfuscator examples/sample.js --config examples/c77-0.json --seed 1 --output out.js`。
+難読化をやり直すときは `npx javascript-obfuscator examples/sample.js --config examples/obfuscator-config.json --seed 1 --output out.js`。
 
 ## 6 本のスクリプト
 
@@ -161,8 +161,8 @@ function average(scores) {
 
 ### なぜこの順序か
 
-- 基本は**難読化を掛けた順の逆**。JsDeObsBench は 1 変換ずつ積み上げた設定（`1-1.json` → `1-7.json`）を
-  持っており、その順は code-compact → debug-protection → name-obfuscation → self-defending →
+- 基本は**難読化を掛けた順の逆**。JsDeObsBench は難読化を 1 変換ずつ積み上げた設定も
+  用意しており、その積み上げ順は code-compact → debug-protection → name-obfuscation → self-defending →
   control-flow-flattening → deadcode-injection → string-obfuscation。この逆順から name-obfuscation を抜いたものが上の順になる。
 - 動かせない制約は 1 つだけで、**self-defending を剥がしてから整形する**こと。self-defending は自分の関数の
   `toString()` に `(((.+)+)+)+$` を当てて整形を検出する。改行が 1 つでも入ると正規表現が破滅的なバックトラックを起こし、
@@ -190,11 +190,11 @@ npm run verify       # 6 本の verify.js をすべて回す
 
 ## 限界
 
-- **対象は C77-0 相当の設定だけ**。`stringArrayEncoding`（base64 / rc4）、`stringArrayWrappersType: "function"`、
+- **対象は上記の 7 変換の設定だけ**。`stringArrayEncoding`（base64 / rc4）、`stringArrayWrappersType: "function"`、
   `stringArrayCallsTransform`、`numbersToExpressions`、`splitStrings`、`transformObjectKeys` などが加わると、
   対応するスクリプトは剥がせないと判断して非ゼロ終了する。壊れたコードは出さないが、その層は残る。
   たとえば `numbersToExpressions: true` ではデコーダ呼び出しの引数がリテラルでなくなるので、`destring` は剥がせない。
-- C77-0 相当の入力でも、まれに `self-defending` を剥がせないことがある。そのときは self-defending と code-compact の 2 層が残る。
+- 対象の設定で難読化した入力でも、まれに `self-defending` を剥がせないことがある。そのときは self-defending と code-compact の 2 層が残る。
 - 識別子名は LLM 頼みなので、名前の当否は保証できない。LLM が名前以外の書き方を変えることもある。
 
 ## ディレクトリ構成

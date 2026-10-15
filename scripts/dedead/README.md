@@ -206,7 +206,6 @@ node strip-deadcode-injection.js /tmp/a1.js -o /tmp/a2.js
 逆順だと、デコーダ別名の宣言 (`const D=_0x1a07;`) が `if` の兄弟文として残っているせいで
 「親ブロックごと置換」が使えず、ブロックが 1 段余る
 （`function(){{return![];}}` と `function(){return![];}`）。意味は同じ。
-`run_deobf_claude_staged.py` の段順（`string-obfuscation` → `deadcode-injection`）とも一致する。
 
 ---
 

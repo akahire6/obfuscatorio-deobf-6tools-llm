@@ -8,7 +8,7 @@
  * **code-compact の層だけ**を決定論的に剥がす。
  *
  * code-compact は変換ではなく**コード生成オプション** `compact: true` ただ1つで、
- * 空白・改行・インデントを落とすだけ（上流 code-compact.json と 1-1.json はバイト一致で、
+ * 空白・改行・インデントを落とすだけ（JsDeObsBench の code-compact 単体の設定も、
  * 既定との差分は "compact": true のみ）。したがって解除は **整形のみ**になる。
  *
  * ★ 触ってはいけないもの（どれも code-compact ではなく別の層 / 常時オンの変換）:
