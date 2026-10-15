@@ -1,0 +1,25 @@
+{
+  "name": "obfuscatorio-deobf-6tools-llm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "javascript-obfuscator (obfuscator.io) の7変換複合を、決定論ツール6本 + LLM 1回で解除する",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "gen-corpus": "for d in destring dedead decff deselfdefend dedebug decompact; do (cd tools/$d && node gen-corpus.js) || exit 1; done",
+    "verify": "for d in destring dedead decff deselfdefend dedebug decompact; do (cd tools/$d && node verify.js) || exit 1; done"
+  },
+  "dependencies": {
+    "@babel/generator": "7.29.8",
+    "@babel/parser": "7.29.8",
+    "@babel/traverse": "7.29.8",
+    "@babel/types": "7.29.8",
+    "@javascript-obfuscator/escodegen": "2.4.2",
+    "acorn": "8.18.0"
+  },
+  "devDependencies": {
+    "javascript-obfuscator": "5.7.0"
+  }
+}

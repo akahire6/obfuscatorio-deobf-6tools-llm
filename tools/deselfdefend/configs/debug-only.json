@@ -1,0 +1,23 @@
+{
+  "_comment": "負例。debug-protection 単体。self-defending と同じ形の「1回だけ実行ラッパ」を独立に生成するので、これを1バイトも変えないことが弁別子（自己参照の有無）が効いていることの証明になる。",
+
+  "compact": false,
+  "identifierNamesGenerator": "mangled",
+
+  "selfDefending": false,
+
+  "debugProtection": true,
+  "debugProtectionInterval": 0,
+  "controlFlowFlattening": false,
+  "deadCodeInjection": false,
+  "stringArray": false,
+
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

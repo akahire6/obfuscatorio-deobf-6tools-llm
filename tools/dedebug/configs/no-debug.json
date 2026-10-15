@@ -1,0 +1,36 @@
+{
+  "_comment": "負例。debug-protection 以外の6変換を全部掛けた構成。ツールがこれを1バイトも変えないことを確かめる。self-defending の calls-controller を debug-protection のものと取り違えていないかがここで出る。",
+
+  "compact": true,
+  "identifierNamesGenerator": "hexadecimal",
+
+  "debugProtection": false,
+
+  "selfDefending": true,
+  "controlFlowFlattening": true,
+  "controlFlowFlatteningThreshold": 0.75,
+  "deadCodeInjection": true,
+  "deadCodeInjectionThreshold": 0.4,
+
+  "stringArray": true,
+  "stringArrayThreshold": 0.75,
+  "stringArrayEncoding": [],
+  "stringArrayIndexesType": ["hexadecimal-number"],
+  "stringArrayIndexShift": true,
+  "stringArrayRotate": true,
+  "stringArrayShuffle": true,
+  "stringArrayWrappersCount": 1,
+  "stringArrayWrappersChainedCalls": true,
+  "stringArrayWrappersParametersMaxCount": 2,
+  "stringArrayWrappersType": "variable",
+  "stringArrayCallsTransform": false,
+
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

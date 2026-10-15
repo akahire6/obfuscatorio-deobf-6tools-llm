@@ -1,0 +1,27 @@
+{
+  "_comment": "対象外の設定（関数ラッパー + callsTransform + base64/rc4 エンコード）に CFF を足したもの。文字列層のデコーダを組み立てられないので storage のキーが読めない。黙って壊れたコードを出さず、理由つきで失敗することを確かめる負例。",
+  "compact": true,
+  "identifierNamesGenerator": "hexadecimal",
+  "stringArray": true,
+  "stringArrayThreshold": 1,
+  "stringArrayEncoding": [
+    "base64",
+    "rc4"
+  ],
+  "stringArrayIndexesType": [
+    "hexadecimal-number",
+    "hexadecimal-numeric-string"
+  ],
+  "stringArrayIndexShift": true,
+  "stringArrayRotate": true,
+  "stringArrayShuffle": true,
+  "stringArrayWrappersCount": 2,
+  "stringArrayWrappersChainedCalls": true,
+  "stringArrayWrappersParametersMaxCount": 4,
+  "stringArrayWrappersType": "function",
+  "stringArrayCallsTransform": true,
+  "stringArrayCallsTransformThreshold": 1,
+  "target": "node",
+  "controlFlowFlattening": true,
+  "controlFlowFlatteningThreshold": 1
+}

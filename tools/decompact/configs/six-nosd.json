@@ -1,0 +1,40 @@
+{
+  "_comment": "seven から self-defending だけ落とした6変換構成。selfDefending:true は compact:true を強制する（SelfDefendingRule）ため、7変換では compact:false の正解が生成できない。この構成だけが「難読化器自身が出すバイト単位の正解」を作れる。",
+
+  "compact": true,
+
+  "debugProtection": true,
+  "debugProtectionInterval": 0,
+
+  "identifierNamesGenerator": "hexadecimal",
+
+  "selfDefending": false,
+
+  "controlFlowFlattening": true,
+  "controlFlowFlatteningThreshold": 0.75,
+
+  "deadCodeInjection": true,
+  "deadCodeInjectionThreshold": 0.4,
+
+  "stringArray": true,
+  "stringArrayThreshold": 0.75,
+  "stringArrayEncoding": [],
+  "stringArrayIndexesType": ["hexadecimal-number"],
+  "stringArrayIndexShift": true,
+  "stringArrayRotate": true,
+  "stringArrayShuffle": true,
+  "stringArrayWrappersCount": 1,
+  "stringArrayWrappersChainedCalls": true,
+  "stringArrayWrappersParametersMaxCount": 2,
+  "stringArrayWrappersType": "variable",
+  "stringArrayCallsTransform": false,
+
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

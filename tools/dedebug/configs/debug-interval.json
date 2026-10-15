@@ -1,0 +1,35 @@
+{
+  "_comment": "debugProtectionInterval > 0。起動 IIFE に加えて setInterval 版の呼び出しが生成される形。ベンチの設定は 0 だが、この形も剥がせることを確かめる。",
+
+  "compact": true,
+  "identifierNamesGenerator": "hexadecimal",
+
+  "debugProtection": true,
+  "debugProtectionInterval": 4000,
+
+  "selfDefending": true,
+  "controlFlowFlattening": false,
+  "deadCodeInjection": false,
+
+  "stringArray": true,
+  "stringArrayThreshold": 0.75,
+  "stringArrayEncoding": [],
+  "stringArrayIndexesType": ["hexadecimal-number"],
+  "stringArrayIndexShift": true,
+  "stringArrayRotate": true,
+  "stringArrayShuffle": true,
+  "stringArrayWrappersCount": 1,
+  "stringArrayWrappersChainedCalls": true,
+  "stringArrayWrappersParametersMaxCount": 2,
+  "stringArrayWrappersType": "variable",
+  "stringArrayCallsTransform": false,
+
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

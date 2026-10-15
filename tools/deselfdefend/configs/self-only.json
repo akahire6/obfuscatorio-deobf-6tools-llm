@@ -1,0 +1,22 @@
+{
+  "_comment": "self-defending 単体（他の6変換は掛けない）。識別子名も別方式（mangled）、整形もそのままなので、ツールが名前の形にも1行かどうかにも文字列配列の有無にも依存していないことを確かめられる。",
+
+  "compact": false,
+  "identifierNamesGenerator": "mangled",
+
+  "selfDefending": true,
+
+  "debugProtection": false,
+  "controlFlowFlattening": false,
+  "deadCodeInjection": false,
+  "stringArray": false,
+
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

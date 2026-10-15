@@ -1,0 +1,36 @@
+{
+  "_comment": "control-flow-flattening 以外の 6 変換（負例）。CFF が掛かっていないので 1 バイトも変えてはいけない。",
+
+  "compact": true,
+  "debugProtection": true,
+  "debugProtectionInterval": 0,
+  "identifierNamesGenerator": "hexadecimal",
+  "selfDefending": true,
+
+  "controlFlowFlattening": false,
+
+  "deadCodeInjection": true,
+  "deadCodeInjectionThreshold": 0.4,
+
+  "stringArray": true,
+  "stringArrayThreshold": 0.75,
+  "stringArrayEncoding": [],
+  "stringArrayIndexesType": ["hexadecimal-number"],
+  "stringArrayIndexShift": true,
+  "stringArrayRotate": true,
+  "stringArrayShuffle": true,
+  "stringArrayWrappersCount": 1,
+  "stringArrayWrappersChainedCalls": true,
+  "stringArrayWrappersParametersMaxCount": 2,
+  "stringArrayWrappersType": "variable",
+  "stringArrayCallsTransform": false,
+
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

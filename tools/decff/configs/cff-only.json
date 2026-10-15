@@ -1,0 +1,23 @@
+{
+  "_comment": "control-flow-flattening 単体。名前そのまま・整形あり・文字列配列なし。文字列層が無い経路（ctx === null、キーが素の文字列リテラル）を通すためのもの。threshold 1 で確実に発火させる。",
+
+  "compact": false,
+  "identifierNamesGenerator": "mangled",
+
+  "controlFlowFlattening": true,
+  "controlFlowFlatteningThreshold": 1,
+
+  "stringArray": false,
+  "deadCodeInjection": false,
+  "selfDefending": false,
+  "debugProtection": false,
+
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

@@ -1,0 +1,27 @@
+{
+  "_comment": "code-compact 単体（他の6変換は掛けない）。上流 code-compact.json は identifierNamesGenerator:\"keep-original\" で名前を残しているが、その値は javascript-obfuscator 5.7.0 で廃止されたので reservedNames:[\"^.*$\"] で同じ効果を出している。識別子も文字列も原本のまま残るので、ツールが難読化の形に依存していないことを確かめられる。なお obj['m'] のブラケット記法と 0x1 の16進リテラルは compact とは無関係に常に出る。",
+
+  "compact": true,
+
+  "debugProtection": false,
+  "debugProtectionInterval": 0,
+
+  "identifierNamesGenerator": "mangled",
+  "reservedNames": ["^.*$"],
+
+  "selfDefending": false,
+
+  "controlFlowFlattening": false,
+  "deadCodeInjection": false,
+
+  "stringArray": false,
+
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

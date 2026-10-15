@@ -1,0 +1,32 @@
+{
+  "_comment": "deadcode-injection を最大発火させ、control-flow-flattening を切った設定。述語が辞書に吸われないので「直リテラル比較」の経路を単独で検証できる。stringArrayThreshold を下げて、配列化されずに残る述語を増やしている。",
+  "compact": true,
+  "debugProtection": false,
+  "identifierNamesGenerator": "mangled",
+  "selfDefending": false,
+  "controlFlowFlattening": false,
+  "deadCodeInjection": true,
+  "deadCodeInjectionThreshold": 1,
+  "stringArray": true,
+  "stringArrayThreshold": 0.1,
+  "stringArrayEncoding": [],
+  "stringArrayIndexesType": [
+    "hexadecimal-number"
+  ],
+  "stringArrayIndexShift": true,
+  "stringArrayRotate": true,
+  "stringArrayShuffle": true,
+  "stringArrayWrappersCount": 1,
+  "stringArrayWrappersChainedCalls": true,
+  "stringArrayWrappersParametersMaxCount": 2,
+  "stringArrayWrappersType": "variable",
+  "stringArrayCallsTransform": false,
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}

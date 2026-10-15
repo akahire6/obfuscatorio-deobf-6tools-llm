@@ -1,0 +1,33 @@
+{
+  "_comment": "deadcode-injection と control-flow-flattening だけ。debug-protection / self-defending を切ってあるので、辞書経由の述語解決だけを単独で検証できる。",
+  "compact": true,
+  "debugProtection": false,
+  "identifierNamesGenerator": "hexadecimal",
+  "selfDefending": false,
+  "controlFlowFlattening": true,
+  "controlFlowFlatteningThreshold": 1,
+  "deadCodeInjection": true,
+  "deadCodeInjectionThreshold": 1,
+  "stringArray": true,
+  "stringArrayThreshold": 0.75,
+  "stringArrayEncoding": [],
+  "stringArrayIndexesType": [
+    "hexadecimal-number"
+  ],
+  "stringArrayIndexShift": true,
+  "stringArrayRotate": true,
+  "stringArrayShuffle": true,
+  "stringArrayWrappersCount": 1,
+  "stringArrayWrappersChainedCalls": true,
+  "stringArrayWrappersParametersMaxCount": 2,
+  "stringArrayWrappersType": "variable",
+  "stringArrayCallsTransform": false,
+  "numbersToExpressions": false,
+  "renameGlobals": false,
+  "renameProperties": false,
+  "simplify": false,
+  "splitStrings": false,
+  "transformObjectKeys": false,
+  "unicodeEscapeSequence": false,
+  "target": "node"
+}
