@@ -3,6 +3,15 @@
 javascript-obfuscator（obfuscator.io）の **7 変換を同時に掛けた難読化**を、
 **決定論スクリプト 6 本 + LLM 1 回**で解除する。
 
+## 出典
+
+このリポジトリは、次の発表で紹介した手法の実装である。
+
+> 櫻井 慶裕, 杉山 量子, 岡本 剛（神奈川工科大学）:
+> 「LLMによるJavaScriptの難読化解除」,
+> コンピュータセキュリティシンポジウム2026（CSS2026）デモ&ポスターセッション, DP-46, 2026年10月.
+> https://www.iwsec.org/css/2026/demo.html
+
 ## Overview (English)
 
 This repository deobfuscates JavaScript produced by
@@ -18,6 +27,10 @@ uses when it applies all seven transformations together.
 - Identifier names (`_0x1a2b3c`) cannot be recovered by AST rewriting, so the result goes to an LLM once,
   using the unmodified zero-shot prompt from JsDeObsBench (`prompts/zeroshot.txt`).
   A regular chat UI is enough: paste the generated prompt and copy back the code block.
+
+This is the implementation of the method presented at CSS2026 (Computer Security Symposium 2026),
+Demo & Poster Session, DP-46: 「LLMによるJavaScriptの難読化解除」 by 櫻井 慶裕, 杉山 量子 and 岡本 剛
+(Kanagawa Institute of Technology).
 
 ```bash
 npm install
@@ -206,7 +219,7 @@ prompts/zeroshot.txt    LLM に渡すプロンプト（JsDeObsBench とバイト
 examples/               自作プログラムで 1 周した例
 ```
 
-## ライセンス・出典
+## ライセンス・参照
 
 - このリポジトリのコードは [MIT License](LICENSE)。
 - 対象の難読化設定とプロンプトの出典: JsDeObsBench（[論文 arXiv:2506.20170](https://arxiv.org/abs/2506.20170) /
