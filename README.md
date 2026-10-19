@@ -29,8 +29,8 @@ uses when it applies all seven transformations together.
   A regular chat UI is enough: paste the generated prompt and copy back the code block.
 
 This is the implementation of the method presented at CSS2026 (Computer Security Symposium 2026),
-Demo & Poster Session, DP-46: 「LLMによるJavaScriptの難読化解除」 by 櫻井 慶裕, 杉山 量子 and 岡本 剛
-(Kanagawa Institute of Technology).
+Demo & Poster Session, DP-46: 「LLMによるJavaScriptの難読化解除」 (Deobfuscating JavaScript with LLMs)
+by Yoshihiro Sakurai, Ryoko Sugiyama and Takeshi Okamoto (Kanagawa Institute of Technology).
 
 ```bash
 npm install
