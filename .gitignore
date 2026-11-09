@@ -3,3 +3,7 @@ scripts/*/testdata/obf/
 scripts/*/testdata/.verify-tmp/
 .DS_Store
 *.log
+
+# Claude Code local settings (may contain approved commands with secrets)
+.claude/settings.local.json
+CLAUDE.local.md
